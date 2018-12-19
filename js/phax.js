@@ -2,6 +2,10 @@ var phax = (function () {
 
     var version = '0.1';
 
+    /* Ajax call in two steps: 
+       Step 1: case 4 sends the request and receives response; 
+       Step 2: case 2 sends the request but aborts it, like a ping
+    */
     function xhrConnection (url, data, callback) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
@@ -13,6 +17,7 @@ var phax = (function () {
                     }
                     break;
                 
+                //Receives the parameters for the queue or worker
                 case 4: 
                     if (this.status = 200 && (typeof callback === 'function')) {
                         callback(xhr.response)
