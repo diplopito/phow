@@ -19,7 +19,7 @@ var phax = (function () {
                 
                 //Receives the parameters for the queue or worker
                 case 4: 
-                    if (this.status = 200 && (typeof callback === 'function')) {
+                    if (this.status === 200 && (typeof callback === 'function')) {
                         callback(xhr.response)
                     }
                     break;                
