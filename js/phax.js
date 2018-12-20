@@ -1,6 +1,6 @@
 var phax = (function () {
 
-    var version = '0.1';
+    var version = '0.1.2';
 
     /* Ajax call in two steps: 
        Step 1: case 4 sends the request and receives response; 
@@ -9,25 +9,24 @@ var phax = (function () {
     function xhrConnection (url, data, callback) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
-
-            switch(this.readyState) {
-                case 2:
-                    if (callback === 'abort') {
-                        this.abort();
-                    }
-                    break;
-                
-                //Receives the parameters for the queue or worker
-                case 4: 
+            //Step 1
+            if (this.readyState === 4) {
                     if (this.status === 200 && (typeof callback === 'function')) {
-                        callback(xhr.response)
-                    }
-                    break;                
+                        callback(xhr.response);
+                    }                
             }
-        }
+        };
         
         xhr.open('POST', url);
         xhr.send((typeof data === "object") ? JSON.stringify(data) : data);
+        
+        //Step 2: leave worker running and continue
+        if (callback === 'abort') {
+            setTimeout(function() {
+                xhr.abort();           
+            }, 1000);
+        }
+        
     }
 
     function send(url, data) {
